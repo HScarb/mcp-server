@@ -338,6 +338,29 @@ class OpenAPIToToolsConverter:
         if parameter_properties:
             tool_parameters['properties'] = parameter_properties.copy()  # 创建副本
 
+        # 添加华为云认证相关的可选参数
+        if 'properties' not in tool_parameters:
+            tool_parameters['properties'] = {}
+            
+        # 添加 ak 参数（可选）
+        tool_parameters['properties']['ak'] = {
+            'type': 'string',
+            'description': '华为云 Access Key，用于身份认证（可选参数）'
+        }
+        
+        # 添加 sk 参数（可选）
+        tool_parameters['properties']['sk'] = {
+            'type': 'string',
+            'description': '华为云 Secret Key，用于身份认证（可选参数）'
+        }
+        
+        # 添加 region 参数（可选）
+        tool_parameters['properties']['region'] = {
+            'type': 'string',
+            'description': '华为云区域，指定云服务的地理位置（可选参数）'
+        }
+
+        # 只有原始 API 参数会被考虑为必需参数，上面添加的华为云参数都是可选的
         valid_required = [req for req in sorted(required_parameters) if req in parameter_properties]
         if valid_required:
             tool_parameters['required'] = valid_required
